@@ -29,33 +29,32 @@ app.use(bodyParser.json()); // Parse JSON from the request body
 app.use(morgan('combined')); // Log all requests to the console
 app.use(session({ secret: secret, cookie: { maxAge: 60000 }, resave: false, saveUninitialized: true}));
 
+// seed database
 mongo.ensureIsConnected(function() {
     seed.seedDataIfNeeded(mongo);
 })
 
 // Configure Passport
-// passport.use(new LocalStrategy(function(username, password, done) {
-//     mongo.getCollection('users').findOne({'username': username}, function(err, user) {
-//         if (err) 
-//             throw err;
+passport.use(new LocalStrategy(function(username, password, done) {
+    mongo.getCollection('users').findOne({'username': username}, function(err, user) {
+        if (err) 
+            throw err;
     
-//         if (!user)
-//             return done(null, false, { message: 'Incorrect username or password.' });
+        if (!user)
+            return done(null, false, { message: 'Incorrect username or password.' });
         
-//         bcrypt.compare(password, user.hash, (err, result) => {
-//             if (result) { // If the password matched
-//                 const payload = { username: username };
-//                 const token = jwt.sign(payload, secret, { expiresIn: '1h' });
-//                 return done(null, {username: username, token: token});
-//             }
-//             return done(null, false, { message: 'Incorrect username or password.' });
-//         }); 
-//     });
-// }));
+        bcrypt.compare(password, user.hash, (err, result) => {
+            if (result) { // If the password matched
+                const payload = { username: username, id: user.id, admin: user.isAdmin };
+                const token = jwt.sign(payload, secret, { expiresIn: '1h' });
+                return done(null, {username: username, token: token});
+            }
+            return done(null, false, { message: 'Incorrect username or password.' });
+        }); 
+    });
+}));
 
-
-// seed.seedDataIfNeeded(mongo);
-// app.use(passport.initialize());
+app.use(passport.initialize());
 
 // Open paths that do not need login. Any route not included here is protected!
 let openPaths = [
@@ -63,16 +62,16 @@ let openPaths = [
 ];
 
 // Validate the user using authentication. checkJwt checks for auth token.
-// app.use(checkJwt({ secret: secret }).unless({ path : openPaths }));
+app.use(checkJwt({ secret: secret }).unless({ path : openPaths }));
 
 // This middleware checks the result of checkJwt
-// app.use((err, req, res, next) => {
-//     if (err.name === 'UnauthorizedError') { // If the user didn't authorize correctly
-//         res.status(401).json({ error: err.message, debug: 'checkJwt' }); // Return 401 with error message.
-//     } else {
-//         next(); // If no errors, send request to next middleware or route handler
-//     }
-// });
+app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') { // If the user didn't authorize correctly
+        res.status(401).json({ error: err.message, debug: 'checkJwt' }); // Return 401 with error message.
+    } else {
+        next(); // If no errors, send request to next middleware or route handler
+    }
+});
 
 /**** Data ****/
 // const data = [
@@ -82,8 +81,8 @@ let openPaths = [
 // ];
 
 /**** Routes ****/
-// const usersRouter = require('./users_router')(users, secret, passport, APP_URL);
-// app.use('/api/users', usersRouter);
+const usersRouter = require('./users_router')(secret, passport, APP_URL);
+app.use('/api/users', usersRouter);
 
 // const kittenRouter = require('./kitten_router')(data);
 // app.use('/api/kittens', kittenRouter);
