@@ -58,7 +58,8 @@ app.use(passport.initialize());
 
 // Open paths that do not need login. Any route not included here is protected!
 let openPaths = [
-    { url: /\/api\/users\/authenticate.*/gi, methods: ['POST', 'GET'] }
+    { url: /\/api\/users\/authenticate.*/gi, methods: ['POST'] },
+    { url: /\/api\/users\/register.*/gi, methods: ['POST'] }
 ];
 
 // Validate the user using authentication. checkJwt checks for auth token.
@@ -72,13 +73,6 @@ app.use((err, req, res, next) => {
         next(); // If no errors, send request to next middleware or route handler
     }
 });
-
-/**** Data ****/
-// const data = [
-//     {id: 1, name: "Garfield", hobbies: ["Purring", "Sleeping", "Eating"]},
-//     {id: 2, name: "Tom", hobbies: ["Purring", "Eating"]},
-//     {id: 3, name: "Felix", hobbies: ["Sleeping", "Eating"]},
-// ];
 
 /**** Routes ****/
 const usersRouter = require('./users_router')(secret, passport, APP_URL);
