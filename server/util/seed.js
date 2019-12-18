@@ -1,26 +1,14 @@
-/**** Libraries ****/
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const cors = require('cors');
-
-const session = require('express-session'); // Only needed for some passport strategies
-const checkJwt = require('express-jwt');    // Check for access tokens automatically
-const bcrypt = require('bcryptjs');         // Used for hashing passwords!
-const jwt = require('jsonwebtoken');
-
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');  
+const mongo = require('../reusable/mongo');
 
 /**** Exports *****/
-
 module.exports = {};
-module.exports.seedDataIfNeeded = function(mongo) {
-    mongo.getCollection('users').find({}).toArray(function(err, result) {
+module.exports.seedDataIfNeeded = function(callback) {
+    mongo.getUsers(function(users) {
         // if there is any user, then no seeding needed
-        if (result.length > 0) {
+        if (users.length > 0) {
             console.log("No need to seed database");
+            callback();
             return;
         }
 
@@ -43,12 +31,13 @@ module.exports.seedDataIfNeeded = function(mongo) {
             'password': '345',
             'isAdmin' : false
         };
+
         var users = [adminUser, johnUser, janeUser];
         users.forEach(user => {
             bcrypt.hash(user.password, 10, function(err, hash) {
                 user.hash = hash; // The hash has been made, and is stored on the user object.
                 delete user.password; // The clear text password is no longer needed
-                mongo.getCollection('users').insertOne(user, function(error, result) {});
+                mongo.addUser(user, function(result) {});
              });
         });
 
@@ -71,7 +60,7 @@ module.exports.seedDataIfNeeded = function(mongo) {
             fictionCategory
         ];
         categories.forEach(category => {
-            mongo.getCollection('categories').insertOne(category, function(error, result) {});
+            mongo.addCategory(category, function(result) {});
         });
 
         // books
@@ -143,9 +132,10 @@ module.exports.seedDataIfNeeded = function(mongo) {
             }
         ];
         books.forEach(book => {
-            mongo.getCollection('books').insertOne(book, function(error, result) {});
+            mongo.addBook(book, function(result) {});
         });
 
         console.log("Database seed completed");
+        callback();
     });
 };

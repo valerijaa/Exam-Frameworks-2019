@@ -19,7 +19,7 @@ module.exports = (secret, passport, APP_URL) => {
             });
         
         var user = {
-            'id': numbers.getRandom(1, 9999),
+            'id': numbers.getRandom(),
             'username': req.body.username,
             'password': req.body.password,
             'isAdmin': false
@@ -29,15 +29,9 @@ module.exports = (secret, passport, APP_URL) => {
             delete user.password; // The clear text password is no longer needed
 
             // insert into mongodb
-            mongo.getCollection('users').insertOne(user, function(error, result) {
-                if(error) {
-                    return res.status(500).send({
-                        message: 'Error while creating new person'
-                     });
-                }
-                else {
-                    res.send(result.ops[0]);
-                }
+            mongo.addUser(user, function(result) {
+                console.log(result);
+                res.send(result);
             });
          });
     });

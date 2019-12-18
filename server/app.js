@@ -30,40 +30,40 @@ app.use(morgan('combined')); // Log all requests to the console
 app.use(session({ secret: secret, cookie: { maxAge: 60000 }, resave: false, saveUninitialized: true}));
 
 // seed database
-mongo.ensureIsConnected(function() {
-    seed.seedDataIfNeeded(mongo);
-})
+seed.seedDataIfNeeded(function() {
+    configureAndInitializePassport();
+});
+
 
 // Configure Passport
-passport.use(new LocalStrategy(function(username, password, done) {
-    mongo.getCollection('users').findOne({'username': username}, function(err, user) {
-        if (err) 
-            throw err;
-    
-        if (!user)
-            return done(null, false, { message: 'Incorrect username or password.' });
-        
-        bcrypt.compare(password, user.hash, (err, result) => {
-            if (result) { // If the password matched
-                const payload = { username: username, id: user.id, admin: user.isAdmin };
-                const token = jwt.sign(payload, secret, { expiresIn: '1h' });
-                return done(null, {username: username, token: token});
-            }
-            return done(null, false, { message: 'Incorrect username or password.' });
-        }); 
-    });
-}));
+function configureAndInitializePassport() {
+    passport.use(new LocalStrategy(function(username, password, done) {
+        mongo.getUserByUsername(username, function(user) {
+            if (!user)
+                return done(null, false, { message: 'Incorrect username or password.' });
+            
+            bcrypt.compare(password, user.hash, (err, result) => {
+                if (result) { // If the password matched
+                    const payload = { username: username, id: user._id, admin: user.isAdmin };
+                    const token = jwt.sign(payload, secret, { expiresIn: '1d' });
+                    return done(null, {username: username, token: token});
+                }
+                return done(null, false, { message: 'Incorrect username or password.' });
+            }); 
+        });
+    }));
+    app.use(passport.initialize());
 
-app.use(passport.initialize());
+    // Open paths that do not need login. Any route not included here is protected!
+    let openPaths = [
+        { url: '/api/categories', methods: ['GET'] },
+        { url: '/api/users/register', methods: ['POST'] },
+        { url: '/api/users/authenticate', methods: ['POST'] }
+    ];
 
-// Open paths that do not need login. Any route not included here is protected!
-let openPaths = [
-    { url: /\/api\/users\/authenticate.*/gi, methods: ['POST'] },
-    { url: /\/api\/users\/register.*/gi, methods: ['POST'] }
-];
-
-// Validate the user using authentication. checkJwt checks for auth token.
-app.use(checkJwt({ secret: secret }).unless({ path : openPaths }));
+    // Validate the user using authentication. checkJwt checks for auth token.
+    app.use(checkJwt({ secret: secret }).unless({ path : openPaths }));
+}
 
 // This middleware checks the result of checkJwt
 app.use((err, req, res, next) => {
@@ -75,11 +75,11 @@ app.use((err, req, res, next) => {
 });
 
 /**** Routes ****/
-const usersRouter = require('./users_router')(secret, passport, APP_URL);
-app.use('/api/users', usersRouter);
+const users = require('./users')(secret, passport, APP_URL);
+app.use('/api/users', users);
 
-// const kittenRouter = require('./kitten_router')(data);
-// app.use('/api/kittens', kittenRouter);
+const categories = require('./categories')();
+app.use('/api/categories', categories);
 
 // "Redirect" all get requests (except for the routes specified above) to React's entry point (index.html)
 // It's important to specify this route as the very last one to prevent overriding all of the other routes
