@@ -58,7 +58,8 @@ function configureAndInitializePassport() {
     let openPaths = [
         { url: '/api/categories', methods: ['GET'] },
         { url: '/api/users/register', methods: ['POST'] },
-        { url: '/api/users/authenticate', methods: ['POST'] }
+        { url: '/api/users/authenticate', methods: ['POST'] },
+        { url: '/api/books', methods: ['GET'] }
     ];
 
     // Validate the user using authentication. checkJwt checks for auth token.
@@ -80,6 +81,9 @@ app.use('/api/users', users);
 
 const categories = require('./categories')();
 app.use('/api/categories', categories);
+
+const books = require('./books')();
+app.use('/api/books', books);
 
 // "Redirect" all get requests (except for the routes specified above) to React's entry point (index.html)
 // It's important to specify this route as the very last one to prevent overriding all of the other routes

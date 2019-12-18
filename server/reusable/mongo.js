@@ -42,21 +42,13 @@ function configureSchemas() {
             id : Number,
             title : String,
             author : String,
-            category: {
-                id : Number,
-                name : String
-            },
+            categoryId: Number,
+            price: Number,
             seller: {
                 name: String,
                 email: String
             },
-            imageUrl : String,
-            user: {
-                id : Number,
-                username : String,
-                hash : String,
-                isAdmin : Boolean
-            }
+            imageUrl : String
         }));
 
     User = mongoose.model('User');
@@ -141,13 +133,12 @@ module.exports.getCategories = function(callback) {
 module.exports.addBook = function(book, callback) {
     var newBook = new Book({
         'id': book.id,
-        'title': book.name,
+        'title': book.title,
         'author': book.author,
-        'category': book.category,
+        'categoryId': book.categoryId,
         'price': book.price,
         'seller' : book.seller,
-        'imageUrl': book.imageUrl,
-        'user': book.user
+        'imageUrl': book.imageUrl
     });
 
     ensureConnectionCreated(function() {
@@ -158,4 +149,39 @@ module.exports.addBook = function(book, callback) {
             }
         );
     });
+};
+module.exports.deleteBook = function(id, callback) {
+    ensureConnectionCreated(function() {
+        Book.deleteOne({ 'id': id}, function (err) {
+            console.log("Deleted book");
+            callback();
+        });
+    });
+};
+module.exports.getBook = function(id, callback) {
+    ensureConnectionCreated(function() {
+        Book.findOne({'id':id}).then(
+            (book) => {
+                callback(book);
+            }
+        );
+    })
+};
+module.exports.getBooks = function(callback) {
+    ensureConnectionCreated(function() {
+        Book.find({}).then(
+            (books) => {
+                callback(books);
+            }
+        );
+    })
+};
+module.exports.getBooksByCategory = function(categoryId, callback) {
+    ensureConnectionCreated(function() {
+        Book.find({'categoryId':categoryId}).then(
+            (books) => {
+                callback(books);
+            }
+        );
+    })
 };
