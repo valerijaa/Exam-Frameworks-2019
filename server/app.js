@@ -66,16 +66,16 @@ function configureAndInitializePassport() {
     ];
 
     // Validate the user using authentication. checkJwt checks for auth token.
-    app.use(checkJwt({ secret: secret }).unless({ path : openPaths }));
+    // app.use(checkJwt({ secret: secret })); //.unless({ path : openPaths }));
 
     // This middleware checks the result of checkJwt
-    app.use((err, req, res, next) => {
-        if (err.name === 'UnauthorizedError') { // If the user didn't authorize correctly
-            res.status(401).json({ error: err.message, debug: 'checkJwt' }); // Return 401 with error message.
-        } else {
-            next(); // If no errors, send request to next middleware or route handler
-        }
-    });
+    // app.use((err, req, res, next) => {
+    //     if (err.name === 'UnauthorizedError') { // If the user didn't authorize correctly
+    //         res.status(401).json({ error: err.message, debug: 'checkJwt' }); // Return 401 with error message.
+    //     } else {
+    //         next(); // If no errors, send request to next middleware or route handler
+    //     }
+    // });
 }
 
 function configureRoutesAndStartApp() {
@@ -92,8 +92,10 @@ function configureRoutesAndStartApp() {
 
     // "Redirect" all get requests (except for the routes specified above) to React's entry point (index.html)
     // It's important to specify this route as the very last one to prevent overriding all of the other routes
-    app.get('*', (req, res) =>
-        res.sendFile(path.resolve('..', 'client', 'build', 'index.html'))
+    app.get('*', (req, res) => {
+        console.log(req);
+        res.sendFile(path.resolve('..', 'client', 'build', 'index.html'));
+    }
     );
 
     /**** Start ****/
