@@ -1,0 +1,21 @@
+.alert {
+    color: orangered;
+    font-weight: bolder;
+}
+
+.container {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 960px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+header {
+    padding: 156px 0 100px;
+    margin-bottom: 30px;
+}
+  
+section {
+    padding: 150px 0;
+}

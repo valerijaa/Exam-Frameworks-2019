@@ -40,7 +40,7 @@ module.exports = (secret, passport, APP_URL) => {
     router.post('/authenticate',
         passport.authenticate('local', { session: false }),
         (req, res) => {
-            res.json({ token: req.user.token, username: req.user.username });
+            res.json({ token: req.user.token, username: req.user.username, admin: req.user.admin });
         });
    
     return router;

@@ -48,7 +48,7 @@ module.exports.seedDataIfNeeded = function(callback) {
         };
         var biographyCategory = {
             'id': 2,
-            'name': 'Programming'
+            'name': 'Biography'
         };
         var fictionCategory = {
             'id': 3,

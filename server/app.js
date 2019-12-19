@@ -46,7 +46,7 @@ function configureAndInitializePassport() {
                 if (result) { // If the password matched
                     const payload = { username: username, id: user._id, admin: user.isAdmin };
                     const token = jwt.sign(payload, secret, { expiresIn: '1d' });
-                    return done(null, {username: username, token: token});
+                    return done(null, {admin:user.isAdmin, username: username, token: token});
                 }
                 return done(null, false, { message: 'Incorrect username or password.' });
             }); 
