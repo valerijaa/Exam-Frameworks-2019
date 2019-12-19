@@ -142,9 +142,18 @@ module.exports.getCategories = function(callback) {
         );
     })
 };
-module.exports.getCategory = function(normalizedCategoryName, callback) {
+module.exports.getCategoryByName = function(normalizedCategoryName, callback) {
     ensureConnectionCreated(function() {
         Category.findOne({'normalizedName':normalizedCategoryName}).then(
+            (category) => {
+                callback(category);
+            }
+        );
+    })
+};
+module.exports.getCategory = function(id, callback) {
+    ensureConnectionCreated(function() {
+        Category.findOne({'id':id}).then(
             (category) => {
                 callback(category);
             }
@@ -184,6 +193,15 @@ module.exports.deleteBook = function(id, callback) {
 module.exports.getBook = function(id, callback) {
     ensureConnectionCreated(function() {
         Book.findOne({'id':id}).then(
+            (book) => {
+                callback(book);
+            }
+        );
+    })
+};
+module.exports.getBookByTitle = function(normalizedBookTitle, callback) {
+    ensureConnectionCreated(function() {
+        Book.findOne({'normalizedTitle':normalizedBookTitle}).then(
             (book) => {
                 callback(book);
             }

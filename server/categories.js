@@ -3,15 +3,23 @@ module.exports = () => {
     let router = express.Router();
     const numbers = require('./util/numbers');
     const mongo = require('./reusable/mongo');
-
+    
     router.get('/', (req, res) => {
-        mongo.getCategories(function(categories){
-            return res.json(categories);
-        });
+        if (req.query.id) {
+            mongo.getCategory(req.query.id, function(category){
+                return res.json(category);
+            });
+        }
+        else {
+            mongo.getCategories(function(categories){
+                return res.json(categories);
+            });
+        }
+        
     });
     
     router.get('/by-normalized-name', (req, res) => {
-        mongo.getCategory(req.query.name, function(category){
+        mongo.getCategoryByName(req.query.name, function(category){
             return res.json(category);
         });
     });

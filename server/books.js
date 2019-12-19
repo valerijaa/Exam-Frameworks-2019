@@ -4,6 +4,12 @@ module.exports = () => {
     const numbers = require('./util/numbers');
     const mongo = require('./reusable/mongo');
 
+    router.get('/by-normalized-title', (req, res) => {
+        mongo.getBookByTitle(req.query.title, function(book){
+            return res.json(book);
+        });
+    });
+
     router.get('/by-category', (req, res) => {
         if (!req.query.categoryId)
             return res.status(400).send({
@@ -16,16 +22,9 @@ module.exports = () => {
     });
 
     router.get('/', (req, res) => {
-        if (req.query.id) {
-            mongo.getBook(req.query.id, function(book){
-                return res.json(book);
-            });
-        }
-        else {
-            mongo.getBooks(function(books){
-                return res.json(books);
-            });
-        }
+        mongo.getBooks(function(books){
+            return res.json(books);
+        });
     });
 
     router.post('/', (req, res) => {

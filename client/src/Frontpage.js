@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import AuthService from './AuthService';
 import {Link} from "@reach/router";
-import './css/Frontpage.css';
 
 class Frontpage extends Component {
     API_URL = process.env.REACT_APP_API_URL;
