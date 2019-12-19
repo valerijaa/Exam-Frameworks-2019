@@ -32,8 +32,8 @@ app.use(session({ secret: secret, cookie: { maxAge: 60000 }, resave: false, save
 // seed database
 seed.seedDataIfNeeded(function() {
     configureAndInitializePassport();
+    configureRoutesAndStartApp();
 });
-
 
 // Configure Passport
 function configureAndInitializePassport() {
@@ -56,44 +56,50 @@ function configureAndInitializePassport() {
 
     // Open paths that do not need login. Any route not included here is protected!
     let openPaths = [
-        { url: '/api/categories', methods: ['GET'] },
+        { url: /\/api\/categories.*/gi, methods: ['GET'] },
         { url: '/api/users/register', methods: ['POST'] },
         { url: '/api/users/authenticate', methods: ['POST'] },
         { url: '/api/books', methods: ['GET'] },
-        { url: '/api/categories/by-normalized-name', methods: ['GET'] },
-        { url: '/api/books/by-category', methods: ['GET'] }
+        { url: /\/api\/categories\/by-normalized-name.*/gi, methods: ['GET'] },
+        { url: /\/api\/books\/by-category.*/gi, methods: ['GET'] },
+        { url: /\/api\/books\/by-normalized-title.*/gi, methods: ['GET'] }
     ];
 
     // Validate the user using authentication. checkJwt checks for auth token.
     app.use(checkJwt({ secret: secret }).unless({ path : openPaths }));
+
+    // This middleware checks the result of checkJwt
+    app.use((err, req, res, next) => {
+        if (err.name === 'UnauthorizedError') { // If the user didn't authorize correctly
+            res.status(401).json({ error: err.message, debug: 'checkJwt' }); // Return 401 with error message.
+        } else {
+            next(); // If no errors, send request to next middleware or route handler
+        }
+    });
 }
 
-// This middleware checks the result of checkJwt
-app.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError') { // If the user didn't authorize correctly
-        res.status(401).json({ error: err.message, debug: 'checkJwt' }); // Return 401 with error message.
-    } else {
-        next(); // If no errors, send request to next middleware or route handler
-    }
-});
+function configureRoutesAndStartApp() {
+    
+    /**** Routes ****/
+    const users = require('./users')(secret, passport, APP_URL);
+    app.use('/api/users', users);
 
-/**** Routes ****/
-const users = require('./users')(secret, passport, APP_URL);
-app.use('/api/users', users);
+    const categories = require('./categories')();
+    app.use('/api/categories', categories);
 
-const categories = require('./categories')();
-app.use('/api/categories', categories);
+    const books = require('./books')();
+    app.use('/api/books', books);
 
-const books = require('./books')();
-app.use('/api/books', books);
+    // "Redirect" all get requests (except for the routes specified above) to React's entry point (index.html)
+    // It's important to specify this route as the very last one to prevent overriding all of the other routes
+    app.get('*', (req, res) =>
+        res.sendFile(path.resolve('..', 'client', 'build', 'index.html'))
+    );
 
-// "Redirect" all get requests (except for the routes specified above) to React's entry point (index.html)
-// It's important to specify this route as the very last one to prevent overriding all of the other routes
-app.get('*', (req, res) =>
-    res.sendFile(path.resolve('..', 'client', 'build', 'index.html'))
-);
+    /**** Start ****/
+    app.listen(port, () => {
+        console.log(`Auth Example API running on port ${port}!`)
+    });
 
-/**** Start ****/
-app.listen(port, () => {
-    console.log(`Auth Example API running on port ${port}!`)
-});
+}
+
