@@ -2,11 +2,12 @@ import React, {Component} from 'react';
 import { Router } from "@reach/router";
 import AuthService from './AuthService';
 import Frontpage from "./Frontpage";
-import {Link} from "@reach/router";
+import {Link, navigate} from "@reach/router";
 import './css/App.css';
 import Login from './Login';
 import Category from './Category';
 import Book from './Book';
+import AdminPanel from './AdminPanel';
 
 class App extends Component {
     API_URL = process.env.REACT_APP_API_URL;
@@ -16,14 +17,16 @@ class App extends Component {
         this.Auth = new AuthService(`${this.API_URL}/users/authenticate`);
         this.state = {
             displayName: this.Auth.getUsername(),
-            isLoggedIn: this.Auth.loggedIn()
+            isLoggedIn: this.Auth.loggedIn(),
+            isAdmin: this.Auth.getIsAdmin()
         };
     }
 
     async refreshUserState() {
         await this.setState({
             displayName: this.Auth.getUsername(),
-            isLoggedIn: this.Auth.loggedIn()
+            isLoggedIn: this.Auth.loggedIn(),
+            isAdmin: this.Auth.getIsAdmin()
         });
     }
 
@@ -32,8 +35,10 @@ class App extends Component {
         this.Auth.logout();
         await this.setState({
             isLoggedIn: false,
-            displayName: null
+            displayName: null,
+            isAdmin: false
         });
+        navigate(`/`);
     }
 
     render() {
@@ -47,8 +52,15 @@ class App extends Component {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarResponsive">
                         <ul className="navbar-nav ml-auto">
-                            {this.state.isLoggedIn ?
+                            {this.state.isLoggedIn.toString() === 'true' ?
                             <React.Fragment>
+                                {this.state.isAdmin.toString() === 'true' ?
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to={`/admin`}>Admin panel</Link>
+                                    </li>
+                                    : null
+                                }
+
                                 <li className="nav-item">
                                     <a className="nav-link" href="#contact">{this.state.displayName}</a>
                                 </li>
@@ -69,6 +81,7 @@ class App extends Component {
                     <Login path="/login" onUserLoggedIn={() => this.refreshUserState()} />
                     <Category path="/categories/:normalizedName" />
                     <Book path="/books/:normalizedTitle" />
+                    <AdminPanel path="/admin" />
                 </Router>
             </React.Fragment>
         );

@@ -55,7 +55,7 @@ class AuthService {
     }
 
     getIsAdmin() {
-        return localStorage.getItem("admin");
+        return (localStorage.getItem("admin") === 'true');
     }
 
     getToken() {
