@@ -59,10 +59,11 @@ module.exports = () => {
                 message: 'Invalid seller information'
             });
 
-        if (!req.body.imageUrl)
-            return res.status(400).send({
-                message: 'Invalid image'
-            });
+        var bookCoverUrl = req.body.imageUrl;
+        if (!bookCoverUrl)
+        {
+            bookCoverUrl = 'https://dummyimage.com/300x400/2a2470/ffffff&text='+req.body.title;
+        }
         
         var book = {
                 'id': numbers.getRandom(),
@@ -74,7 +75,7 @@ module.exports = () => {
                     'name':req.body.seller.name,
                     'email':req.body.seller.email
                 },
-                'imageUrl': req.body.imageUrl
+                'imageUrl': bookCoverUrl
             };
 
         // insert into mongodb

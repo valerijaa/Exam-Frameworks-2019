@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var slugify = require('slugify');
+var text = require('./../util/text');
 var url = process.env.DB_CONNECTION_STRING || "mongodb://admin:secret@localhost:27017";
 var Schema = mongoose.Schema;
 
@@ -60,13 +60,7 @@ function configureSchemas() {
     Book = mongoose.model('Book');
 }
 
-function normalizeText(text) {
-    return slugify(text, {
-        replacement: '-',    // replace spaces with replacement
-        remove: /[*+~.()'"!:@]/g, // regex to remove characters
-        lower: true,         // result in lower case
-      })
-}
+
 
 module.exports = {};
 
@@ -113,7 +107,7 @@ module.exports.addCategory = function(category, callback) {
         'id': category.id,
         'name': category.name,
         'description': category.description,
-        'normalizedName': normalizeText(category.name)
+        'normalizedName': text.normalizeText(category.name)
     });
 
     ensureConnectionCreated(function() {
@@ -170,7 +164,7 @@ module.exports.addBook = function(book, callback) {
         'price': book.price,
         'seller' : book.seller,
         'imageUrl': book.imageUrl,
-        'normalizedTitle': normalizeText(book.title)
+        'normalizedTitle': text.normalizeText(book.title)
     });
 
     ensureConnectionCreated(function() {

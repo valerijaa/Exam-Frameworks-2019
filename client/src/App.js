@@ -8,6 +8,7 @@ import Login from './Login';
 import Category from './Category';
 import Book from './Book';
 import AdminPanel from './AdminPanel';
+import CreateBook from './CreateBook';
 
 class App extends Component {
     API_URL = process.env.REACT_APP_API_URL;
@@ -62,6 +63,9 @@ class App extends Component {
                                 }
 
                                 <li className="nav-item">
+                                <Link className="nav-link" to={`/post-a-book`}>Post a book</Link>
+                                </li>
+                                <li className="nav-item">
                                     <a className="nav-link" href="#contact">{this.state.displayName}</a>
                                 </li>
                                 <li className="nav-item">
@@ -82,6 +86,7 @@ class App extends Component {
                     <Category path="/categories/:normalizedName" />
                     <Book path="/books/:normalizedTitle" />
                     <AdminPanel path="/admin" />
+                    <CreateBook path="/post-a-book" />
                 </Router>
             </React.Fragment>
         );
