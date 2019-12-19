@@ -25,6 +25,12 @@ module.exports = () => {
     });
 
     router.post('/', (req, res) => {
+        if (req.user.admin === false) {
+            return res.status(403).send({
+                message: 'Only admins are allowed to create a category'
+            });
+        }
+
         if (!req.body.name)
             return res.status(400).send({
                 message: 'Invalid category name'
@@ -43,6 +49,12 @@ module.exports = () => {
     });
 
     router.delete('/', (req, res) => {
+        if (req.user.admin === false) {
+            return res.status(403).send({
+                message: 'Only admins are allowed to delete a category'
+            });
+        }
+
         if (!req.query.id){
             return res.status(400).send({message: 'Category id is missing'});
         }
