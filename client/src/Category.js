@@ -44,6 +44,11 @@ class Category extends Component {
             categoryDescription = this.state.category.description; 
         }
 
+        let noBooksAvailableAlert = <div></div>;
+        if (this.state.category && this.state.books.length === 0) {
+            noBooksAvailableAlert = <div className="alert alert-info col-12" role="alert">No books in this category <span role="img" aria-label="no books">😫</span></div>
+        }
+
         return (
             <div>
                 <header className="bg-primary text-white">
@@ -55,6 +60,7 @@ class Category extends Component {
 
                 <div className="container">
                     <div className="row">
+                    {noBooksAvailableAlert}
                     {this.state.books.map(book => <div className="col-4" key={book.id} >
                         <div className="card">
                             <img className="card-img-top" src={book.imageUrl} alt="book cover" />
@@ -62,7 +68,7 @@ class Category extends Component {
                                 <h5 className="card-title">
                                     <Link to={`/books/${book.normalizedTitle}`}>{book.title}</Link>
                                 </h5>
-                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <p className="card-text">{book.author}</p>
                             </div>
                             </div>
                         </div>)}
