@@ -53,6 +53,7 @@ class AdminPanel extends Component {
 
                 <CreateCategory categoryCreated={(category) => this.newCategoryCreated(category)}/>
 
+                <br/>
                 <div className="container">
                     <div className="row">
                     <h3>List of categories:</h3>

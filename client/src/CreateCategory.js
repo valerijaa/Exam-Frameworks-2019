@@ -66,7 +66,7 @@ class CreateCategory extends Component {
                             <h3>Create new category:</h3>
                             {errorMessageAlert}
                             <div className="form-group">
-                                <label htmlFor="name">Name</label>
+                                <label htmlFor="name">Name*</label>
                                 <input onChange={event => this.handleChange(event)} type="text" value={this.state.name}
                                 name="name" className="form-control" id="name" placeholder="Enter category name" />
                             </div>

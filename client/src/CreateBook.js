@@ -22,6 +22,10 @@ class CreateBook extends Component {
     }
 
     componentDidMount () {
+        if (this.Auth.loggedIn() === false) {
+            window.location = '/login'; // couldn't get reach router navigate to work during 'componentDidMount' :( 
+        }
+        
         this.getCategoriesData();
     }
 
@@ -104,17 +108,17 @@ class CreateBook extends Component {
                             <form>
                                 {errorMessageAlert}
                                 <div className="form-group">
-                                    <label htmlFor="title">Title</label>
+                                    <label htmlFor="title">Title*</label>
                                     <input onChange={event => this.handleChange(event)} type="text" value={this.state.title}
                                         name="title" className="form-control" id="title" placeholder="Enter title" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="author">Author</label>
+                                    <label htmlFor="author">Author*</label>
                                     <input onChange={event => this.handleChange(event)} type="text" value={this.state.author} className="form-control"
                                         name="author" id="author" placeholder="Enter author" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="categoryId">Category</label>
+                                    <label htmlFor="categoryId">Category*</label>
                                     <select className="form-control" name="categoryId" id="categoryId" value={this.state.categoryId} onChange={event => this.handleChange(event)}>
                                         <option value="" disabled>Choose a category</option>
                                         {this.state.categories.map(category => <option value={category.id} key={category.id} >
@@ -123,17 +127,17 @@ class CreateBook extends Component {
                                     </select>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="price">Price</label>
+                                    <label htmlFor="price">Price*</label>
                                     <input onChange={event => this.handleChange(event)} type="number" value={this.state.pric} className="form-control"
                                         name="price" id="price" placeholder="Enter price" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="sellerName">Sellers name</label>
+                                    <label htmlFor="sellerName">Sellers name*</label>
                                     <input onChange={event => this.handleChange(event)} type="text" value={this.state.sellerName} className="form-control"
                                         name="sellerName" id="sellerName" placeholder="Enter sellers name" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="sellerEmail">Sellers email</label>
+                                    <label htmlFor="sellerEmail">Sellers email*</label>
                                     <input onChange={event => this.handleChange(event)} type="email" value={this.state.sellerEmail} className="form-control"
                                         name="sellerEmail" id="sellerEmail" placeholder="Enter sellers email" />
                                 </div>
