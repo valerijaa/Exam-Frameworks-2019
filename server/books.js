@@ -1,3 +1,6 @@
+/**
+ * Inspiration mix from react qa assignment app and lesson examples.
+ */
 module.exports = () => {
     let express = require('express');
     let router = express.Router();

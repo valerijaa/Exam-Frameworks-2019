@@ -1,3 +1,6 @@
+/**
+ * Inspired by react qa assignemnt and teachers examples from lessons (14)
+ */
 import React, { Component } from 'react';
 import AuthService from './AuthService';
 import { navigate } from "@reach/router"

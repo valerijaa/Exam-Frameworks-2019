@@ -1,3 +1,7 @@
+/**
+ * Inspired from Lesson 14 assignment and examples
+ */
+
 /**** Libraries ****/
 const path = require('path');
 const express = require('express');

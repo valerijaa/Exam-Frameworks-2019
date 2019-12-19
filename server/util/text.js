@@ -1,3 +1,6 @@
+/**
+ * I used slugify to normalize text to be used for category and book urls
+ */
 var slugify = require('slugify');
 /**** Exports *****/
 module.exports = {};

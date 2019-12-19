@@ -1,3 +1,8 @@
+/**
+ *  Module, that is responsible for seeding database with default data if needed.
+ *  Insert users, categories, books.
+ */
+
 const bcrypt = require('bcryptjs');  
 const mongo = require('../reusable/mongo');
 

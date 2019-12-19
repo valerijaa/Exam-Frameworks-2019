@@ -1,4 +1,6 @@
 /**
+ * Inspired by teachers examples from lessons (13, 14)
+ * 
  * Service class for authenticating users against an API
  * and storing JSON Web Tokens in the browser's LocalStorage.
  */

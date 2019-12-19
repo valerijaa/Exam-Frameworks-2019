@@ -1,3 +1,7 @@
+/**
+ * Inspired from React QA assignment app, mongoose and mongo documentation
+ */
+
 var mongoose = require('mongoose');
 var text = require('./../util/text');
 var url = process.env.DB_CONNECTION_STRING || "mongodb://admin:secret@localhost:27017";
@@ -59,8 +63,6 @@ function configureSchemas() {
     Category = mongoose.model('Category');
     Book = mongoose.model('Book');
 }
-
-
 
 module.exports = {};
 

@@ -1,3 +1,6 @@
+/**
+ * Inspiration mix from react qa assignment app and lesson examples.
+ */
 module.exports = () => {
     let express = require('express');
     let router = express.Router();
@@ -59,7 +62,6 @@ module.exports = () => {
             return res.status(400).send({message: 'Category id is missing'});
         }
 
-        console.log(req.query.id);
         mongo.deleteCategory(req.query.id, function(result) {
             res.send({message: 'Category is deleted'});
         });

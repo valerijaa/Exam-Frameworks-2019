@@ -1,3 +1,6 @@
+/**
+ * Inspiration mix from react qa assignment app and lesson examples.
+ */
 /**** Repository ****/
 const mongo = require('./reusable/mongo');
 const numbers = require('./util/numbers');
