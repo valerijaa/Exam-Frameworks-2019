@@ -38,7 +38,7 @@ module.exports.seedDataIfNeeded = function(callback) {
             'isAdmin': true
         };
 
-        var users = [adminUser, johnUser, janeUser];
+        var users = [adminUser, johnUser, janeUser, anotherAdminUser];
         users.forEach(user => {
             bcrypt.hash(user.password, 10, function(err, hash) {
                 user.hash = hash; // The hash has been made, and is stored on the user object.
