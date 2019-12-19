@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import AuthService from './AuthService';
+import {Link} from "@reach/router";
 import './css/Frontpage.css';
 
 class Frontpage extends Component {
@@ -14,7 +15,6 @@ class Frontpage extends Component {
     }
 
     componentDidMount() {
-        console.log("mount");
         this.getData();
     }
 
@@ -39,15 +39,13 @@ class Frontpage extends Component {
                 <div className="container">
                     <div className="row">
                         {this.state.categories.map(category => <div className="col-4" key={category.id} >
-                        <div className="card">
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                        <a href="/">
-                                        {category.name}
-                                        </a>
+                            <div className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        <Link to={`/categories/${category.normalizedName}`}>{category.name}</Link>
                                     </h5>
-                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            </div>
+                                    <p className="card-text">{category.description}</p>
+                                </div>
                             </div>
                         </div>)}
                     </div>

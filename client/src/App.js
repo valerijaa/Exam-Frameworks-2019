@@ -5,6 +5,7 @@ import Frontpage from "./Frontpage";
 import {Link} from "@reach/router";
 import './css/App.css';
 import Login from './Login';
+import Category from './Category';
 
 class App extends Component {
     API_URL = process.env.REACT_APP_API_URL;
@@ -16,10 +17,6 @@ class App extends Component {
             displayName: this.Auth.getUsername(),
             isLoggedIn: this.Auth.loggedIn()
         };
-    }
-
-    componentDidMount() {
-        console.log("mount 2");
     }
 
     async refreshUserState() {
@@ -69,6 +66,7 @@ class App extends Component {
                 <Router>
                     <Frontpage path="/" />
                     <Login path="/login" onUserLoggedIn={() => this.refreshUserState()} />
+                    <Category path="/categories/:normalizedName" />
                 </Router>
             </React.Fragment>
         );

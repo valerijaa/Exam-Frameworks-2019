@@ -44,20 +44,35 @@ module.exports.seedDataIfNeeded = function(callback) {
         // categories
         var programmingCategory = {
             'id': 1,
-            'name': 'Programming'
+            'name': 'Programming',
+            'description': 'Books for persons who are looking for improvement in technical aspect.'
         };
         var biographyCategory = {
             'id': 2,
-            'name': 'Biography'
+            'name': 'Biography',
+            'description': 'A life story documented in history and transformed into fiction through the insight and imagination of the writer.'
         };
         var fictionCategory = {
             'id': 3,
-            'name': 'Fiction'
+            'name': 'Mainstream fiction',
+            'description': 'Fiction that transcends popular novel categories—mystery, romance or science fiction, [etc.]—is called mainstream fiction.'
+        };
+        var thrillerCategory = {
+            'id': 4,
+            'name': 'Thriller',
+            'description': 'A novel intended to arouse feelings of excitement or suspense.'
+        };
+        var horrorCategory = {
+            'id': 5,
+            'name': 'Horror',
+            'description': '👻👻👻'
         };
         var categories = [
             programmingCategory,
             biographyCategory,
-            fictionCategory
+            fictionCategory,
+            thrillerCategory,
+            horrorCategory
         ];
         categories.forEach(category => {
             mongo.addCategory(category, function(result) {});

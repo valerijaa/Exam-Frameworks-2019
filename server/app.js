@@ -59,7 +59,9 @@ function configureAndInitializePassport() {
         { url: '/api/categories', methods: ['GET'] },
         { url: '/api/users/register', methods: ['POST'] },
         { url: '/api/users/authenticate', methods: ['POST'] },
-        { url: '/api/books', methods: ['GET'] }
+        { url: '/api/books', methods: ['GET'] },
+        { url: '/api/categories/by-normalized-name', methods: ['GET'] },
+        { url: '/api/books/by-category', methods: ['GET'] }
     ];
 
     // Validate the user using authentication. checkJwt checks for auth token.

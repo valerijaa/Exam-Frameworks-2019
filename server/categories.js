@@ -9,6 +9,12 @@ module.exports = () => {
             return res.json(categories);
         });
     });
+    
+    router.get('/by-normalized-name', (req, res) => {
+        mongo.getCategory(req.query.name, function(category){
+            return res.json(category);
+        });
+    });
 
     router.post('/', (req, res) => {
         if (!req.body.name)
@@ -18,7 +24,8 @@ module.exports = () => {
         
         var category = {
             'id': numbers.getRandom(),
-            'name': req.body.name
+            'name': req.body.name,
+            'description': req.body.description
         };
 
         // insert into mongodb

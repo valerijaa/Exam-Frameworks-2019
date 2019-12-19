@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var slugify = require('slugify');
 var url = process.env.DB_CONNECTION_STRING || "mongodb://admin:secret@localhost:27017";
 var Schema = mongoose.Schema;
 
@@ -35,7 +36,9 @@ function configureSchemas() {
     mongoose.model('Category', 
         new Schema({
             id : Number,
-            name : String
+            name : String,
+            description: String,
+            normalizedName: String
         }));
     mongoose.model('Book', 
         new Schema({
@@ -48,12 +51,21 @@ function configureSchemas() {
                 name: String,
                 email: String
             },
-            imageUrl : String
+            imageUrl : String,
+            normalizedTitle: String
         }));
 
     User = mongoose.model('User');
     Category = mongoose.model('Category');
     Book = mongoose.model('Book');
+}
+
+function normalizeText(text) {
+    return slugify(text, {
+        replacement: '-',    // replace spaces with replacement
+        remove: /[*+~.()'"!:@]/g, // regex to remove characters
+        lower: true,         // result in lower case
+      })
 }
 
 module.exports = {};
@@ -99,7 +111,9 @@ module.exports.addUser = function(user, callback) {
 module.exports.addCategory = function(category, callback) {
     var newCategory = new Category({
         'id': category.id,
-        'name': category.name
+        'name': category.name,
+        'description': category.description,
+        'normalizedName': normalizeText(category.name)
     });
 
     ensureConnectionCreated(function() {
@@ -128,7 +142,15 @@ module.exports.getCategories = function(callback) {
         );
     })
 };
-
+module.exports.getCategory = function(normalizedCategoryName, callback) {
+    ensureConnectionCreated(function() {
+        Category.findOne({'normalizedName':normalizedCategoryName}).then(
+            (category) => {
+                callback(category);
+            }
+        );
+    })
+};
 // books
 module.exports.addBook = function(book, callback) {
     var newBook = new Book({
@@ -138,7 +160,8 @@ module.exports.addBook = function(book, callback) {
         'categoryId': book.categoryId,
         'price': book.price,
         'seller' : book.seller,
-        'imageUrl': book.imageUrl
+        'imageUrl': book.imageUrl,
+        'normalizedTitle': normalizeText(book.title)
     });
 
     ensureConnectionCreated(function() {
