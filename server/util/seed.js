@@ -22,14 +22,20 @@ module.exports.seedDataIfNeeded = function(callback) {
         var johnUser = {
             'id': 2,
             'username': 'john',
-            'password': '345',
+            'password': 'john',
             'isAdmin' : false
         };
         var janeUser = {
             'id': 3,
             'username': 'jane',
-            'password': '345',
+            'password': 'jane',
             'isAdmin' : false
+        };
+        var anotherAdminUser = {
+            'id': 4,
+            'username': 'admin',
+            'password': 'qwerty',
+            'isAdmin': true
         };
 
         var users = [adminUser, johnUser, janeUser];
